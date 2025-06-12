@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memorial Hospital EMR System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <i class="fas fa-hospital"></i>
+        <h2>Memorial Hospital</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="active" data-view="dashboard">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </li>
+          <li data-view="patients">
+            <i class="fas fa-users"></i>
+            <span>All Patients</span>
+          </li>
+          <li data-view="pending">
+            <i class="fas fa-clock"></i>
+            <span>Pending Queue</span>
+            <span class="badge pending-count">0</span>
+          </li>
+          <li data-view="search">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <p>EMR System v1.0</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <button id="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 id="current-view-title">Dashboard</h1>
+        </div>
+        <div class="header-right">
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="quick-search" placeholder="Quick search...">
+          </div>
+          <div class="user-info">
+            <span>Admin</span>
+            <div class="avatar">
+              <i class="fas fa-user-md"></i>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard View -->
+      <section class="view-section active" id="dashboard-view">
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-details">
+              <h3>Total Patients</h3>
+              <p class="total-patients-count">0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-details">
+              <h3>Pending Records</h3>
+              <p class="pending-patients-count">0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-day"></i>
+            </div>
+            <div class="stat-details">
+              <h3>Today's Records</h3>
+              <p class="today-records-count">0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="stat-details">
+              <h3>System Status</h3>
+              <p class="system-status">Online</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-recent">
+          <div class="section-header">
+            <h2>Recent Patients</h2>
+            <button class="view-all-btn" data-view="patients">View All</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table" id="recent-patients-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Date of Birth</th>
+                  <th>Gender</th>
+                  <th>Received Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="loading-row">
+                  <td colspan="5">Loading recent patients...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- All Patients View -->
+      <section class="view-section" id="patients-view">
+        <div class="section-header">
+          <h2>All Patients</h2>
+          <div class="actions">
+            <div class="search-bar table-search">
+              <i class="fas fa-search"></i>
+              <input type="text" id="patients-search" placeholder="Search patients...">
+            </div>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="all-patients-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Date of Birth</th>
+                <th>Gender</th>
+                <th>Received Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="loading-row">
+                <td colspan="6">Loading patients data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Pending Queue View -->
+      <section class="view-section" id="pending-view">
+        <div class="section-header">
+          <h2>Pending Records</h2>
+          <div class="actions">
+            <button id="process-all-btn" class="primary-btn">
+              <i class="fas fa-check-circle"></i>
+              Process All Records
+            </button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="pending-patients-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Date of Birth</th>
+                <th>Received Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="loading-row">
+                <td colspan="4">Loading pending records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Search View -->
+      <section class="view-section" id="search-view">
+        <div class="search-container">
+          <h2>Search Patients</h2>
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="Enter patient ID or name...">
+            <button id="search-btn" class="primary-btn">
+              <i class="fas fa-search"></i>
+              Search
+            </button>
+          </div>
+          <div class="search-results">
+            <div class="section-header">
+              <h3>Search Results</h3>
+              <span class="results-count">0 results found</span>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="search-results-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Gender</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="no-results-row">
+                    <td colspan="5">Enter a search term above</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Patient Details Modal -->
+  <div class="modal" id="patient-details-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Patient Details</h2>
+        <button class="close-modal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="patient-info">
+          <div class="info-section">
+            <h3>Personal Information</h3>
+            <table class="info-table">
+              <tr>
+                <td>Patient ID:</td>
+                <td id="modal-patient-id"></td>
+              </tr>
+              <tr>
+                <td>Name:</td>
+                <td id="modal-patient-name"></td>
+              </tr>
+              <tr>
+                <td>Date of Birth:</td>
+                <td id="modal-patient-dob"></td>
+              </tr>
+              <tr>
+                <td>Gender:</td>
+                <td id="modal-patient-gender"></td>
+              </tr>
+              <tr>
+                <td>Received Date:</td>
+                <td id="modal-received-date"></td>
+              </tr>
+            </table>
+          </div>
+          <div class="info-section">
+            <h3>FHIR Data</h3>
+            <pre id="modal-fhir-data"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="close-modal secondary-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal" id="confirmation-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Confirmation</h2>
+        <button class="close-modal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmation-message">Are you sure you want to process all pending records?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="close-modal secondary-btn">Cancel</button>
+        <button id="confirm-btn" class="primary-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html> 
