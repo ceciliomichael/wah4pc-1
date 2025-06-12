@@ -1,0 +1,32 @@
+[
+  {
+    "facility_id": "sunshine_clinic",
+    "facility_name": "Sunshine Clinic",
+    "supported_formats": [
+      "hl7_v2_json",
+      "custom_clinic_format_v1"
+    ],
+    "api_endpoint": null,
+    "type": "clinic"
+  },
+  {
+    "facility_id": "memorial_hospital",
+    "facility_name": "Memorial Hospital",
+    "supported_formats": [
+      "fhir_r4"
+    ],
+    "preferred_format": "fhir_r4",
+    "api_endpoint": "http://localhost:8001/fhir/patient",
+    "type": "hospital"
+  },
+  {
+    "facility_id": "general_hospital",
+    "facility_name": "General Hospital",
+    "supported_formats": [
+      "fhir_r4"
+    ],
+    "preferred_format": "fhir_r4",
+    "api_endpoint": "http://localhost:8002/fhir/patient",
+    "type": "hospital"
+  }
+] 

@@ -1,0 +1,7 @@
+fastapi
+pydantic
+httpx
+fhir.resources
+python-dotenv
+requests
+tabulate 
