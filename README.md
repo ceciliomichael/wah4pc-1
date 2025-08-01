@@ -17,23 +17,51 @@ This system functions as a middleware service, receiving healthcare data in one 
 
 ## Project Structure
 
+This project is organized into several key directories and files, providing a clear separation of concerns for the core interoperability service, demonstration systems, and web-based applications.
+
 ```
-/interoperability_system/  
-│  
-├── .env                  # Environment variables (API keys, endpoints)  
-├── requirements.txt      # Project dependencies  
-│  
-└── app/  
-    │  
-    ├── __init__.py  
-    ├── main.py             # FastAPI application entry point  
-    ├── models.py           # Pydantic models for API data structures  
-    │  
-    └── services/  
-        ├── __init__.py  
-        ├── ai_service.py       # Logic for communicating with the AI model  
-        ├── translation_tools.py# The actual translation functions (tools)  
-        └── validation_service.py # Logic for validating translated data
+/wah4pc-1/
+│
+├── app/                      # Core Healthcare Interoperability Service
+│   ├── __init__.py           # Package initialization
+│   ├── main.py               # FastAPI application entry point
+│   ├── models.py             # Pydantic models for API data structures
+│   └── services/             # Contains business logic services
+│       ├── __init__.py
+│       ├── ai_service.py     # Logic for communicating with the AI model
+│       ├── translation_tools.py # The actual data translation functions (tools)
+│       └── validation_service.py # Logic for validating translated data
+│
+├── demonstration/            # Contains simple CLI-based demonstration scripts
+│   ├── source_clinic_system.py # Simulates a clinic sending data
+│   └── target_hospital_system.py # Simulates a hospital receiving data
+│
+├── web4clinics/              # Web-based Clinic EMR System (Frontend + Backend)
+│   ├── package.json          # Node.js dependencies and scripts
+│   ├── server.js             # Express.js server for the clinic application
+│   ├── public/               # Frontend assets (HTML, CSS, JS)
+│   │   ├── app.js
+│   │   ├── index.html
+│   │   └── styles.css
+│   └── wah4clinics/          # Data storage for the clinic app
+│       ├── patients.json
+│       └── sent_records.json
+│
+├── web4hospitals/            # Web-based Hospital EMR System (Frontend + Backend)
+│   ├── package.json          # Node.js dependencies and scripts
+│   ├── server.js             # Express.js server for the hospital application
+│   ├── public/               # Frontend assets (HTML, CSS, JS)
+│   │   ├── css/styles.css
+│   │   ├── index.html
+│   │   └── js/app.js
+│   └── data/                 # Data storage for the hospital app
+│       ├── pending_queue.json
+│       └── received_patients.json
+│
+├── facility_registry.json    # Global registry of healthcare facilities (used by web apps)
+├── requirements.txt          # Python dependencies for the core service
+├── README.md                 # Project overview and documentation
+└── .env.example              # Example environment variables for AI service configuration (if applicable)
 ```
 
 ## Setup and Installation
@@ -151,73 +179,84 @@ python demonstration/source_clinic_system.py
 2.  The **Interoperability Service** (Terminal 2) will show logs of the translation, validation, and successful routing to the target.
 3.  The **Target System** (Terminal 1) will print the final, translated FHIR resource to the console, confirming it received the data.
 
-## CLI-Based Demonstration Systems
+## Web-Based Demonstration
 
-For a more comprehensive demonstration, interactive CLI-based systems have been created for both the clinic and hospital sides. These systems provide a more realistic simulation of healthcare systems using the interoperability service.
+For a more comprehensive and interactive demonstration, web-based applications for both the clinic and hospital are available. These provide a modern, user-friendly interface for simulating the healthcare workflow.
 
 ### Folder Structure
 
-- `wah4clinics/` - Source clinic system with patient management
-- `wah4hospital/` - Target hospital system that receives translated FHIR data
-- `app/` - The core interoperability service
+- `web4clinics/` - A web-based source clinic system (Sunshine Clinic EMR).
+- `web4hospitals/` - A web-based target hospital system (Memorial Hospital EMR).
+- `app/` - The core interoperability service.
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm (which comes with Node.js)
+- Python 3.9+ and `pip`
 
 ### Setup
 
-1. Install the required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
+1.  **Install Python Dependencies**:
+    From the project root, install the required packages for the core interoperability service.
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2.  **Install Clinic App Dependencies**:
+    Navigate to the `web4clinics` directory and install the Node.js packages.
+    ```bash
+    cd web4clinics
+    npm install
+    cd ..
+    ```
+
+3.  **Install Hospital App Dependencies**:
+    Navigate to the `web4hospitals` directory and install the Node.js packages.
+    ```bash
+    cd web4hospitals
+    npm install
+    cd ..
+    ```
 
 ### Running the Demonstration
 
-You'll need **three separate terminal windows**:
+You will need **three separate terminal windows** running from the project's root directory.
 
-**Terminal 1: Start the Hospital System**
+**Terminal 1: Start the Hospital System (Port 8001)**
+This starts the web server for the Memorial Hospital EMR.
 ```bash
-python wah4hospital/hospital_system.py
+cd web4hospitals
+npm start
 ```
-This starts both the hospital CLI interface and its API server on port 8001.
+- Access it at: `http://localhost:8001`
 
-**Terminal 2: Start the Interoperability Service**
+**Terminal 2: Start the Interoperability Service (Port 8000)**
+This starts the core Python-based translation service.
 ```bash
 uvicorn app.main:app --reload
 ```
-This starts the translation service on port 8000.
 
-**Terminal 3: Start the Clinic System**
+**Terminal 3: Start the Clinic System (Port 3000)**
+This starts the web server for the Sunshine Clinic EMR.
 ```bash
-python wah4clinics/clinic_system.py
+cd web4clinics
+npm start
 ```
-This starts the clinic CLI interface.
-
-### Using the Systems
-
-**Clinic System Features:**
-- View all patients in the clinic database
-- Add new patients
-- Send patient records to the hospital through the interoperability service
-- Track records that have been sent
-
-**Hospital System Features:**
-- Automatically receives translated FHIR resources
-- View all patients in the hospital database
-- Check pending records awaiting processing
-- Process and acknowledge pending records
-- Search for patients by ID or name
+- Access it at: `http://localhost:3000`
 
 ### Workflow Example
 
-1. In the Clinic System:
-   - Select "View All Patients" to see available records
-   - Select "Send Patient Record to Hospital" and choose a patient
-   
-2. The Interoperability Service:
-   - Receives the clinic's data format
-   - Translates it to FHIR format using the AI service
-   - Validates the FHIR structure
-   - Forwards it to the hospital system
-   
-3. In the Hospital System:
-   - Select "Check Pending Records" to see the incoming data
-   - Select "Process Pending Records" to acknowledge and store them
-   - Select "View All Patients" to see the processed records 
+1.  **Open the Clinic App** (`http://localhost:3000`):
+    - Navigate to the "Patients" tab to see existing patient records.
+    - Go to the "Send Records" tab.
+    - Select a patient and a target hospital from the dropdowns, then click "Send Patient Record."
+    - You will receive a success notification, and the record will appear in the "Sent Records" table.
+
+2.  **Observe the Interoperability Service** (Terminal 2):
+    - Logs will appear showing that the data was received, translated from the clinic's format to FHIR, validated, and successfully routed to the hospital system.
+
+3.  **Open the Hospital App** (`http://localhost:8001`):
+    - The "Pending Records" card on the dashboard will show a new incoming record.
+    - Click "Process Pending Records" to move the record from the queue into the main hospital database.
+    - Navigate to the "Patients" tab to view the complete, translated patient record now stored in the hospital's system. 
